@@ -1,0 +1,6 @@
+# Скрипты и docker-файлы всегда с Unix-переводами строк,
+# иначе они не выполнятся в Linux-контейнерах.
+*.sh text eol=lf
+Dockerfile text eol=lf
+*.conf text eol=lf
+mvnw text eol=lf

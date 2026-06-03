@@ -1,80 +1,125 @@
 name: math-optimization
 
+# Развёртывание за Nginx Proxy Manager:
+#   - порты наружу НЕ публикуем (нет конфликтов с NPM/portainer)
+#   - hub и web-* подключены к внешней сети `proxy`, NPM ходит к ним по имени контейнера
+#   - backend-* живут только во внутренней сети и наружу не видны
+#
+# В NPM завести проксі-хосты (Scheme: http, Forward Port: 80):
+#   mathopt.<домен> -> mo-hub
+#   lab1.<домен>    -> mo-web-1
+#   lab2.<домен>    -> mo-web-2   (включить Websockets Support)
+#   lab3.<домен>    -> mo-web-3   (включить Websockets Support)
+#   lab4.<домен>    -> mo-web-4
+#   lab5.<домен>    -> mo-web-5
+#
+# Адреса работ для хаба задаются в .env (см. .env.example).
+
 services:
-  # ---------- Точка входа ----------
+  # ---------- Точка входа (хаб) ----------
   hub:
     build: ./hub
     container_name: mo-hub
-    ports:
-      - "8080:80"
+    environment:
+      LAB1_URL: ${LAB1_URL:-http://localhost:8081}
+      LAB2_URL: ${LAB2_URL:-http://localhost:8082}
+      LAB3_URL: ${LAB3_URL:-http://localhost:8083}
+      LAB4_URL: ${LAB4_URL:-http://localhost:8084}
+      LAB5_URL: ${LAB5_URL:-http://localhost:8085}
+    networks:
+      - proxy
     restart: unless-stopped
 
   # ---------- Работа 1: одномерная оптимизация ----------
   backend-1:
     build: ./lesson-1/backend
     container_name: mo-backend-1
+    networks:
+      - internal
     restart: unless-stopped
   web-1:
     build: ./lesson-1/frontend
     container_name: mo-web-1
     depends_on:
       - backend-1
-    ports:
-      - "8081:80"
+    networks:
+      - proxy
+      - internal
     restart: unless-stopped
 
   # ---------- Работа 2: многомерная оптимизация ----------
   backend-2:
     build: ./lesson-2/backend
     container_name: mo-backend-2
+    networks:
+      - internal
     restart: unless-stopped
   web-2:
     build: ./lesson-2/frontend
     container_name: mo-web-2
     depends_on:
       - backend-2
-    ports:
-      - "8082:80"
+    networks:
+      - proxy
+      - internal
     restart: unless-stopped
 
   # ---------- Работа 3: градиентные методы ----------
   backend-3:
     build: ./lesson-3/backend
     container_name: mo-backend-3
+    networks:
+      - internal
     restart: unless-stopped
   web-3:
     build: ./lesson-3/frontend
     container_name: mo-web-3
     depends_on:
       - backend-3
-    ports:
-      - "8083:80"
+    networks:
+      - proxy
+      - internal
     restart: unless-stopped
 
   # ---------- Работа 4: условия Куна–Таккера ----------
   backend-4:
     build: ./lesson-4/backend
     container_name: mo-backend-4
+    networks:
+      - internal
     restart: unless-stopped
   web-4:
     build: ./lesson-4/frontend
     container_name: mo-web-4
     depends_on:
       - backend-4
-    ports:
-      - "8084:80"
+    networks:
+      - proxy
+      - internal
     restart: unless-stopped
 
   # ---------- Работа 5: штрафные и барьерные функции ----------
   backend-5:
     build: ./lesson-5/backend
     container_name: mo-backend-5
+    networks:
+      - internal
     restart: unless-stopped
   web-5:
     build: ./lesson-5/frontend
     container_name: mo-web-5
     depends_on:
       - backend-5
-    ports:
-      - "8085:80"
+    networks:
+      - proxy
+      - internal
     restart: unless-stopped
+
+networks:
+  # Внешняя сеть, в которой работает Nginx Proxy Manager.
+  # Создаётся один раз: docker network create proxy
+  proxy:
+    external: true
+  # Внутренняя сеть для связи web-* <-> backend-*
+  internal:
+    driver: bridge
