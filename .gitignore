@@ -1,0 +1,52 @@
+# ============================================================
+#  Корневой .gitignore для всего репозитория.
+#  Исключаем артефакты сборки и временные файлы.
+#  Всё, что нужно для `docker compose up` (исходники, Dockerfile,
+#  nginx.conf, package-lock.json, pom.xml), остаётся в репозитории.
+# ============================================================
+
+# ---------- Node / Vite (frontend) ----------
+node_modules/
+dist/
+.vite/
+*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ---------- Java / Maven (backend) ----------
+target/
+out/
+*.class
+*.jar
+*.war
+.mvn/wrapper/maven-wrapper.jar
+
+# ---------- IDE / редакторы ----------
+.idea/
+*.iml
+.vscode/
+*.swp
+*~
+
+# ---------- ОС ----------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---------- Логи / временное ----------
+*.log
+logs/
+
+# ---------- Локальные переменные окружения ----------
+.env
+.env.local
+*.env.local
+
+# ---------- Сгенерированные из .doc/.docx материалы ----------
+extracted.files/
+extracted_doc/
+_docx_media/
+doc_images/
+_assignment_text.txt

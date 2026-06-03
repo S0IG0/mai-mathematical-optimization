@@ -1,0 +1,80 @@
+name: math-optimization
+
+services:
+  # ---------- Точка входа ----------
+  hub:
+    build: ./hub
+    container_name: mo-hub
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+
+  # ---------- Работа 1: одномерная оптимизация ----------
+  backend-1:
+    build: ./lesson-1/backend
+    container_name: mo-backend-1
+    restart: unless-stopped
+  web-1:
+    build: ./lesson-1/frontend
+    container_name: mo-web-1
+    depends_on:
+      - backend-1
+    ports:
+      - "8081:80"
+    restart: unless-stopped
+
+  # ---------- Работа 2: многомерная оптимизация ----------
+  backend-2:
+    build: ./lesson-2/backend
+    container_name: mo-backend-2
+    restart: unless-stopped
+  web-2:
+    build: ./lesson-2/frontend
+    container_name: mo-web-2
+    depends_on:
+      - backend-2
+    ports:
+      - "8082:80"
+    restart: unless-stopped
+
+  # ---------- Работа 3: градиентные методы ----------
+  backend-3:
+    build: ./lesson-3/backend
+    container_name: mo-backend-3
+    restart: unless-stopped
+  web-3:
+    build: ./lesson-3/frontend
+    container_name: mo-web-3
+    depends_on:
+      - backend-3
+    ports:
+      - "8083:80"
+    restart: unless-stopped
+
+  # ---------- Работа 4: условия Куна–Таккера ----------
+  backend-4:
+    build: ./lesson-4/backend
+    container_name: mo-backend-4
+    restart: unless-stopped
+  web-4:
+    build: ./lesson-4/frontend
+    container_name: mo-web-4
+    depends_on:
+      - backend-4
+    ports:
+      - "8084:80"
+    restart: unless-stopped
+
+  # ---------- Работа 5: штрафные и барьерные функции ----------
+  backend-5:
+    build: ./lesson-5/backend
+    container_name: mo-backend-5
+    restart: unless-stopped
+  web-5:
+    build: ./lesson-5/frontend
+    container_name: mo-web-5
+    depends_on:
+      - backend-5
+    ports:
+      - "8085:80"
+    restart: unless-stopped

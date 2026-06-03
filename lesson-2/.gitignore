@@ -1,0 +1,7 @@
+node_modules/
+dist/
+target/
+.idea/
+*.iml
+_assignment_text.txt
+_docx_media/
